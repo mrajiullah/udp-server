@@ -1,0 +1,4 @@
+docker run -d \
+	   --restart=unless-stopped \
+	   --net=host \
+	   mraj/ubuntu-udpserver -s 130.243.27.222 -p 8080
