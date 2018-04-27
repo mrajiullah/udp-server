@@ -4,20 +4,28 @@ MAINTAINER mohammad.rajiullah@kau.se
 
 COPY files/* /opt/
 
+# DumbInit
+ENV DI_VER 1.2.1
+
 RUN apt-get update
 RUN apt-get install -y --force-yes \
 	gcc   \
 	make \
+	curl \
 	&& cd opt/ \
-	&& make\
+	&& make \
+	&& chmod +x UDPbwEstimatorSrv \ 
+	&& curl -L -o dumb-init.deb "https://github.com/Yelp/dumb-init/releases/download/v${DI_VER}/dumb-init_${DI_VER}_amd64.deb" \
+    	&& dpkg -i dumb-init.deb \
 	&& apt-get purge -y --force-yes  gcc \
+	&& apt-get purge -y --force-yes  curl \
 	&& apt-get clean -y --force-yes clean \
         && apt-get -y --force-yes autoremove \
         # Cleanup
         && rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache/* /var/tmp/* /usr/share/doc /usr/share/man /usr/share/locale /var/cache/debconf/*-old
 
 
+WORKDIR /opt
 
-
-ENTRYPOINT ["dumb-init", "--", "/bin/bash", "/opt/start.sh"]
+ENTRYPOINT ["dumb-init", "--", "/opt/UDPbwEstimatorSrv"]
 
